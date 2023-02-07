@@ -1,10 +1,9 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-const position = require('../../constant/position')
 const User = require('../../modules/user/user.model')
-
-const MONGODB_URI = process.env.MONGODB_URI
+const position = require('../../constant/position')
+const config = require('../../config')
 
 async function adminSeeder() {
   console.log('Seeding super-admin user to the database...')
@@ -32,11 +31,13 @@ async function adminSeeder() {
 async function seedDatabase() {
   mongoose
     .set('strictQuery', false)
-    .connect(MONGODB_URI, {
+    .connect(config.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-    .then(() => console.log('Connected to MongoDB database: ', MONGODB_URI))
+    .then(() =>
+      console.log('Connected to MongoDB database: ', config.MONGODB_URI)
+    )
     .catch((error) => console.log(error))
 
   await adminSeeder()

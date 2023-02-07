@@ -4,6 +4,7 @@ const mediaHandler = new MediaHandler()
 const throwError = require('@/lib/throw-error')
 const cloudinary = require('@/infrastructure/cloudinary')
 const csv = require('@/entities/csv-entity')
+const config = require('@/config')
 
 class MediaController {
   async create(req, res, next) {
@@ -18,7 +19,7 @@ class MediaController {
         throwError(422, 'Please upload a file')
       }
 
-      const dir = process.env.LOCAL_STORAGE_PATH + file.filename
+      const dir = config.LOCAL_STORAGE_PATH + file.filename
 
       const data = {
         name: file.originalname,
@@ -29,14 +30,7 @@ class MediaController {
         createdBy: userId,
       }
 
-      const IMAGE_MIMETYPES = [
-        'image/jpg',
-        'image/jpeg',
-        'image/png',
-        'image/webp',
-      ]
-
-      if (IMAGE_MIMETYPES.includes(file.mimetype)) {
+      if (config.IMAGE_MIMETYPES.includes(file.mimetype)) {
         const result = await cloudinary.uploadAvatar(file)
 
         data.name = file.originalname
@@ -60,7 +54,7 @@ class MediaController {
     } catch (error) {
       // delete file immediately if error occured
       if (req.file) {
-        const dir = process.env.LOCAL_STORAGE_PATH + req.file.filename
+        const dir = config.LOCAL_STORAGE_PATH + req.file.filename
         if (fs.existsSync(dir)) {
           fs.unlinkSync(dir)
         }

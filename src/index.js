@@ -11,14 +11,15 @@ require('module-alias/register')
 const app = require('./app')
 
 const { createConnection } = require('./infrastructure/mongodb')
-const helper = require('./lib/helpers')
+const { normalizePort } = require('./lib/helpers')
+const config = require('./config')
 
 /**
  * Get PORT and APP_URL from environment and store in Express.
  */
 
-const PORT = helper.normalizePort(process.env.PORT || '3000')
-const APP_URL = process.env.APP_URL
+const PORT = normalizePort(config.PORT || '3000')
+const APP_URL = config.APP_URL
 
 app.set('port', PORT)
 

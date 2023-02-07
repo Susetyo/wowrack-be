@@ -1,6 +1,7 @@
 const Media = require('@/modules/media/media.model')
 const Repository = require('@/lib/mongodb-repo')
 const cloudinary = require('@/infrastructure/cloudinary')
+const config = require('@/config')
 
 class AvatarEntity {
   constructor() {
@@ -12,9 +13,7 @@ class AvatarEntity {
 
     if (avatar) {
       // delete user avatar from cloudinary
-      await cloudinary.deleteAvatar(
-        process.env.CLD_UPLOAD_PATH + avatar.filename
-      )
+      await cloudinary.deleteAvatar(config.CLD_UPLOAD_PATH + avatar.filename)
 
       // delete avatar from database
       await this.mediaRepository.deleteById(avatar._id)

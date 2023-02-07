@@ -1,9 +1,10 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const Repository = require('../mongodb-repo')
+const config = require('../../config')
 
-const SECRET_KEY = process.env.SECRET_KEY
-const JWT_TTL = process.env.JWT_TTL
+const SECRET_KEY = config.SECRET_KEY
+const JWT_TTL = config.JWT_TTL
 
 const normalizePort = (val) => {
   const port = parseInt(val, 10)

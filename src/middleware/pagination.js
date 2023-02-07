@@ -1,14 +1,13 @@
-const parsePagination = ({ page, perPage }) => {
-  const DEFAULT_LIMIT_LIST = 20
-  const MAX_LIMIT_LIST = 1000
+const config = require('@/config')
 
+const parsePagination = ({ page, perPage }) => {
   let _page = parseInt(page, 10)
   let _limit = parseInt(perPage, 10)
 
   _page = Number.isNaN(_page) ? 1 : _page
-  _limit = Number.isNaN(_limit) ? DEFAULT_LIMIT_LIST : _limit
+  _limit = Number.isNaN(_limit) ? config.DEFAULT_LIMIT_LIST : _limit
 
-  _limit = Math.min(_limit, MAX_LIMIT_LIST)
+  _limit = Math.min(_limit, config.MAX_LIMIT_LIST)
 
   const _skip = _page * _limit - _limit
 

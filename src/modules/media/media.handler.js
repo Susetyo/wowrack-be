@@ -5,6 +5,7 @@ const Repository = require('@/lib/mongodb-repo')
 const throwError = require('@/lib/throw-error')
 const allowedMimeTypes = require('@/constant/allowed-mimetypes')
 const cloudinary = require('@/infrastructure/cloudinary')
+const config = require('@/config')
 
 class MediaHandler {
   constructor() {
@@ -12,7 +13,7 @@ class MediaHandler {
   }
 
   async createMediaHandler(data) {
-    const dir = process.env.LOCAL_STORAGE_PATH + data.filename
+    const dir = config.LOCAL_STORAGE_PATH + data.filename
 
     // additional prohibited mimetype validation
     // if somehow the file gets uploaded to the server
@@ -52,7 +53,7 @@ class MediaHandler {
       throwError(404, 'Data not found')
     }
 
-    await cloudinary.deleteAvatar(process.env.CLD_UPLOAD_PATH + media.filename)
+    await cloudinary.deleteAvatar(config.CLD_UPLOAD_PATH + media.filename)
     return await this.mediaRepository.deleteById(id)
   }
 }

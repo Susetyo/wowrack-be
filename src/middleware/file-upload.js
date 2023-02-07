@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const allowedMimeTypes = require('@/constant/allowed-mimetypes')
 const { removeSpecialCharacter } = require('@/lib/helpers')
+const config = require('@/config')
 
 /**
  * TODO:
@@ -14,11 +15,11 @@ const { removeSpecialCharacter } = require('@/lib/helpers')
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // create directory if it doesn't exists
-    if (!fs.existsSync(process.env.LOCAL_STORAGE_PATH)) {
-      fs.mkdirSync(process.env.LOCAL_STORAGE_PATH, { recursive: true })
+    if (!fs.existsSync(config.LOCAL_STORAGE_PATH)) {
+      fs.mkdirSync(config.LOCAL_STORAGE_PATH, { recursive: true })
     }
 
-    cb(null, process.env.LOCAL_STORAGE_PATH)
+    cb(null, config.LOCAL_STORAGE_PATH)
   },
   filename: function (req, file, cb) {
     const uid = Date.now()
@@ -47,4 +48,7 @@ const fileFilter = function (req, file, cb) {
 module.exports = multer({
   storage,
   fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB,
+  },
 })
