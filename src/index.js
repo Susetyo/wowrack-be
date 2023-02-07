@@ -38,7 +38,4 @@ server.listen(PORT, () => {
 
   // connect to database
   createConnection(config.MONGODB_URI)
-
-  // connect to log database
-  createConnection(config.MONGODB_LOG_URI)
 })
