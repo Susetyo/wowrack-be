@@ -36,6 +36,9 @@ const server = http.createServer(app)
 server.listen(PORT, () => {
   console.log(`Application running on ${APP_URL}:${PORT}`)
 
-  // connect to mongodb
-  createConnection()
+  // connect to database
+  createConnection(config.MONGODB_URI)
+
+  // connect to log database
+  createConnection(config.MONGODB_LOG_URI)
 })

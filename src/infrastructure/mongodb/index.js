@@ -1,17 +1,27 @@
 const mongoose = require('mongoose')
-const config = require('../../config')
 
-const createConnection = async function () {
-  return mongoose
-    .set('strictQuery', false)
-    .connect(config.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+const connect = (uri) => {
+  const conn = mongoose.createConnection(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+
+  conn.on('error', (err) =>
+    console.error('Unable to connect to MongoDB database:', err)
+  )
+  conn.once('open', function () {
+    console.log('Connected to MongoDB database', uri)
+  })
+
+  return conn
+}
+
+const createConnection = (uri) => {
+  return connect(uri)
+    .on('error', (err) => {
+      console.error(err)
     })
-    .then(() =>
-      console.log('Connected to MongoDB database: ', config.MONGODB_URI)
-    )
-    .catch((error) => console.log(error))
+    .on('disconnected', () => connect(uri))
 }
 
 module.exports = {
