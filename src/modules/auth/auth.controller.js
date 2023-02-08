@@ -1,11 +1,22 @@
 const AuthHandler = require('@/modules/auth/auth.handler')
 const authHandler = new AuthHandler()
 
+const LogHandler = require('@/modules/log/log.handler')
+const logHandler = new LogHandler()
+
 class AuthController {
   async login(req, res, next) {
     try {
       const { body } = req
       const response = await authHandler.requestAccessTokenHandler(body)
+
+      // insert log
+      await logHandler.createLogHandler({
+        req,
+        module: logHandler.module.AUTH,
+        action: logHandler.action.LOGIN,
+        description: 'Auth Login',
+      })
 
       res.send(response)
     } catch (error) {

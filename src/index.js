@@ -15,13 +15,13 @@ const { normalizePort } = require('./lib/helpers')
 const config = require('./config')
 
 /**
- * Get PORT and APP_URL from environment and store in Express.
+ * Get PORT from environment and store in Express.
  */
 
 const PORT = normalizePort(config.PORT || '3000')
-const APP_URL = config.APP_URL
 
 app.set('port', PORT)
+app.set('trust proxy', true)
 
 /**
  * Create HTTP server.
@@ -33,8 +33,8 @@ const server = http.createServer(app)
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(PORT, () => {
-  console.log(`Application running on ${APP_URL}:${PORT}`)
+server.listen(PORT, config.HOST, () => {
+  console.log(`Server listening at http://${config.HOST}:${config.PORT}`)
 
   // connect to database
   createConnection(config.MONGODB_URI)

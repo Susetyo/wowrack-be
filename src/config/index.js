@@ -1,6 +1,6 @@
 module.exports = Object.freeze({
-  APP_URL: process.env.APP_URL,
-  APP_ENV: process.env.APP_ENV,
+  ENV: process.env.ENV,
+  HOST: process.env.HOST,
   PORT: process.env.PORT,
 
   MONGODB_URI: process.env.MONGODB_URI,
