@@ -40,6 +40,10 @@ class AuthHandler {
           path: 'avatar',
           select: 'path fullpath',
         },
+        {
+          path: 'position',
+          select: 'name',
+        },
       ])
 
     if (!user) {
@@ -47,6 +51,7 @@ class AuthHandler {
     }
 
     user = user.toJSON()
+    user.position = user.position.name
     delete user.password
 
     return user

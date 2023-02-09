@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
-const employeeStatus = require('@/constant/employee-status')
-const position = require('@/constant/position')
+const employeeStatus = require('../../constant/employee-status')
 
 const schema = new mongoose.Schema(
   {
@@ -20,9 +19,9 @@ const schema = new mongoose.Schema(
       default: null,
     },
     position: {
-      type: String,
-      enum: Object.values(position),
-      required: '{PATH} is required!',
+      type: mongoose.Types.ObjectId,
+      ref: 'EmployeePosition',
+      required: true,
     },
     status: {
       type: String,

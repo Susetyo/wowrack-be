@@ -65,6 +65,10 @@ class EmployeeHandler {
           select: 'title',
         },
         {
+          path: 'position',
+          select: 'name',
+        },
+        {
           path: 'user',
           select: 'fullname birthplace birthdate bio phone email',
           populate: {
@@ -79,7 +83,7 @@ class EmployeeHandler {
       avatar: employee.user.avatar,
       fullname: employee.user.fullname,
       division: employee.division.title,
-      position: employee.position,
+      position: employee.position.name,
       birthplace: employee.user.birthplace,
       birthdate: employee.user.birthdate,
       bio: employee.user.bio,
@@ -161,6 +165,10 @@ class EmployeeHandler {
           select: 'title',
         },
         {
+          path: 'position',
+          select: 'name',
+        },
+        {
           path: 'user',
           select: 'fullname birthplace birthdate bio phone email',
           populate: {
@@ -179,7 +187,7 @@ class EmployeeHandler {
       avatar: employee.user.avatar,
       fullname: employee.user.fullname,
       division: employee.division.title,
-      position: employee.position,
+      position: employee.position.name,
       birthplace: employee.user.birthplace,
       birthdate: employee.user.birthdate,
       bio: employee.user.bio,

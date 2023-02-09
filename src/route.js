@@ -4,6 +4,7 @@ const errorHandler = require('@/middleware/error-handler')
 const authRoute = require('@/modules/auth/auth.route')
 const divisionRoute = require('@/modules/division/division.route')
 const employeeRoute = require('@/modules/employee/employee.route')
+const employeePositionRoute = require('@/modules/employee-position/employee-position.route')
 const mediaRoute = require('@/modules/media/media.route')
 
 router.get('/', function (req, res) {
@@ -13,6 +14,7 @@ router.get('/', function (req, res) {
 router.use('/api/auth', authRoute)
 router.use('/api/division', divisionRoute)
 router.use('/api/employee', employeeRoute)
+router.use('/api/employee-position', employeePositionRoute)
 router.use('/api/media', mediaRoute)
 
 // use error handler

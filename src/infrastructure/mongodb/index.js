@@ -14,6 +14,14 @@ const createConnection = async function () {
     .catch((error) => console.log(error))
 }
 
+const closeConnection = async function () {
+  return mongoose.connection
+    .close()
+    .then(() => console.log('MongoDB connection closed...'))
+    .catch((error) => console.log(error))
+}
+
 module.exports = {
   createConnection,
+  closeConnection,
 }
