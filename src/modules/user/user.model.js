@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const mongooseSlug = require('mongoose-slug-updater')
 const { generateHash } = require('../../lib/helpers')
-const position = require('../../constant/position')
 
 const schema = new mongoose.Schema(
   {
@@ -53,8 +52,8 @@ const schema = new mongoose.Schema(
       required: '{PATH} is required!',
     },
     position: {
-      type: String,
-      enum: Object.values(position),
+      type: mongoose.Types.ObjectId,
+      ref: 'EmployeePosition',
       required: true,
     },
     createdBy: {
