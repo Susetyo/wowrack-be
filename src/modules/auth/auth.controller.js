@@ -29,6 +29,14 @@ class AuthController {
       const { userId } = req
       const response = await authHandler.getProfileHandler(userId)
 
+      // insert log
+      await logHandler.createLogHandler({
+        req,
+        module: logHandler.module.AUTH,
+        action: logHandler.action.GET_PROFILE,
+        description: 'Get Profile',
+      })
+
       res.send(response)
     } catch (error) {
       next(error)
