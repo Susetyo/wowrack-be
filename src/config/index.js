@@ -2,6 +2,7 @@ module.exports = Object.freeze({
   ENV: process.env.ENV,
   HOST: process.env.HOST,
   PORT: process.env.PORT,
+  URL: process.env.URL,
 
   MONGODB_URI: process.env.MONGODB_URI,
   MONGODB_LOG_URI: process.env.MONGODB_LOG_URI,
@@ -20,4 +21,8 @@ module.exports = Object.freeze({
   LOCAL_STORAGE_PATH: process.env.LOCAL_STORAGE_PATH,
 
   IMAGE_MIMETYPES: ['image/jpg', 'image/jpeg', 'image/png', 'image/webp'],
+  EXCEL_MIMETYPES: [
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ],
 })

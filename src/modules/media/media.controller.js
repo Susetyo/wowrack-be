@@ -2,14 +2,12 @@ const fs = require('fs')
 const MediaHandler = require('@/modules/media/media.handler')
 const mediaHandler = new MediaHandler()
 const throwError = require('@/lib/throw-error')
-const cloudinary = require('@/infrastructure/cloudinary')
-const csv = require('@/entities/csv-entity')
 const config = require('@/config')
 
 class MediaController {
   async create(req, res, next) {
     try {
-      const { file, userId } = req
+      const { file, userId, body } = req
 
       if (req.fileFilterError) {
         throwError(422, req.fileFilterError)
@@ -18,8 +16,6 @@ class MediaController {
       if (!file) {
         throwError(422, 'Please upload a file')
       }
-
-      const dir = config.LOCAL_STORAGE_PATH + file.filename
 
       const data = {
         name: file.originalname,
@@ -30,31 +26,22 @@ class MediaController {
         createdBy: userId,
       }
 
-      if (config.IMAGE_MIMETYPES.includes(file.mimetype)) {
-        const result = await cloudinary.uploadAvatar(file)
-
-        data.name = file.originalname
-        data.filename = result.original_filename
-        data.path = result.secure_url
-        data.size = result.bytes
-        data.mimetype = file.mimetype
+      if (body?.kpiDocumentType) {
+        data.kpiDocumentType = body.kpiDocumentType
       }
 
-      if (file.mimetype === 'text/csv') {
-        const result = await csv.parse(dir)
-        // TODO: handle insert many
-        console.log(result)
+      if (body?.kpiDivisionId) {
+        data.kpiDivisionId = body.kpiDivisionId
       }
-
-      // delete file immediately from local storage after successful upload
-      fs.unlinkSync(dir)
 
       const response = await mediaHandler.createMediaHandler(data)
+
       res.send(response)
     } catch (error) {
       // delete file immediately if error occured
       if (req.file) {
         const dir = config.LOCAL_STORAGE_PATH + req.file.filename
+
         if (fs.existsSync(dir)) {
           fs.unlinkSync(dir)
         }

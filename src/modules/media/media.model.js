@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const config = require('@/config')
 
 const schema = new mongoose.Schema(
   {
@@ -35,7 +36,12 @@ const schema = new mongoose.Schema(
 )
 
 schema.virtual('fullpath').get(function () {
-  return this.path
+  const STORAGE_PATH = '/storage/uploads/'
+  const dir = STORAGE_PATH + this.filename
+
+  return config.IMAGE_MIMETYPES.includes(this.mimetype)
+    ? this.path
+    : config.URL + dir
 })
 
 module.exports = mongoose.model('Media', schema)
