@@ -1,14 +1,16 @@
-const _ = require('lodash')
-const Employee = require('@/modules/employee/employee.model')
+const Media = require('@/modules/media/media.model')
 const User = require('@/modules/user/user.model')
 const Repository = require('@/lib/mongodb-repo')
 const excel = require('@/entities/excel-entity')
 const throwError = require('@/lib/throw-error')
 const employeeStatus = require('@/constant/employee-status')
+const config = require('@/config')
+const _ = require('lodash')
+const fs = require('fs')
 
 class KPIEntity {
   constructor() {
-    this.employeeRepoitory = new Repository(Employee)
+    this.mediaRepository = new Repository(Media)
     this.userRepository = new Repository(User)
   }
 
@@ -123,23 +125,11 @@ class KPIEntity {
 
     // check whether employee exists or not
     for (const row of list) {
-      let userId = null
       let isEmployeeExists = false
 
-      const user = await this.userRepository
-        .findOne({
-          fullname: row.supportCoordinator,
-          deletedAt: { $eq: null },
-        })
-        .select('_id')
-
-      if (user) {
-        userId = user._id
-      }
-
       if (data?.kpiDivisionId) {
-        isEmployeeExists = await this.employeeRepoitory.any({
-          user: userId,
+        isEmployeeExists = await this.userRepository.any({
+          fullname: row.supportCoordinator,
           division: data.kpiDivisionId,
           status: employeeStatus.ACTIVE,
           deletedAt: { $eq: null },
@@ -153,6 +143,22 @@ class KPIEntity {
   }
 
   // TODO: handle other kpi document types
+
+  async deleteKPIDocument(id) {
+    const document = await this.mediaRepository.findById(id)
+
+    if (!document) {
+      throwError(404, 'Media not found')
+    }
+
+    // delete file from local storage
+    const dir = config.LOCAL_STORAGE_PATH + document.filename
+    if (fs.existsSync(dir)) {
+      fs.unlinkSync(dir)
+    }
+
+    return await this.mediaRepository.deleteById(id)
+  }
 }
 
 function countWeeklyTicketCount(arr, biWeekIndex, name) {

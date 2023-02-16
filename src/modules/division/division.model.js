@@ -19,12 +19,10 @@ const schema = new mongoose.Schema(
       slugPaddingSize: 3,
       index: true,
     },
-    employees: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'Employee',
-      },
-    ],
+    employees: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'User',
+    },
     createdBy: {
       type: mongoose.Types.ObjectId,
       ref: 'User',

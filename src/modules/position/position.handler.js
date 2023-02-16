@@ -1,16 +1,16 @@
-const Employee = require('@/modules/employee/employee.model')
-const EmployeePosition = require('@/modules/employee-position/employee-position.model')
+const Position = require('@/modules/position/position.model')
+const User = require('@/modules/user/user.model')
 const Repository = require('@/lib/mongodb-repo')
 const throwError = require('@/lib/throw-error')
 
 class EmployeePositionHandler {
   constructor() {
-    this.employeeRepository = new Repository(Employee)
-    this.employeePositionRepository = new Repository(EmployeePosition)
+    this.positionRepository = new Repository(Position)
+    this.userRepository = new Repository(User)
   }
 
   async createEmployeePositionHandler(data) {
-    return await this.employeePositionRepository.create(data)
+    return await this.positionRepository.create(data)
   }
 
   async getListEmployeePositionHandler(query) {
@@ -29,7 +29,7 @@ class EmployeePositionHandler {
       payload.filter.name = { $regex: query.keyword, $options: 'i' }
     }
 
-    const result = await this.employeePositionRepository.findAndCount(payload)
+    const result = await this.positionRepository.findAndCount(payload)
     result.list = result.list.map((position) => {
       return {
         _id: position._id,
@@ -41,7 +41,7 @@ class EmployeePositionHandler {
   }
 
   async getDetailEmployeePositionHandler(id) {
-    const position = await this.employeePositionRepository.findOne({
+    const position = await this.positionRepository.findOne({
       _id: id,
       deletedAt: { $eq: null },
     })
@@ -54,7 +54,7 @@ class EmployeePositionHandler {
   }
 
   async updateEmployeePositionHandler(id, data) {
-    const position = await this.employeePositionRepository.findOne({
+    const position = await this.positionRepository.findOne({
       _id: id,
       deletedAt: { $eq: null },
     })
@@ -63,11 +63,11 @@ class EmployeePositionHandler {
       throwError(404, 'Position not found')
     }
 
-    return await this.employeePositionRepository.updateById(id, data)
+    return await this.positionRepository.updateById(id, data)
   }
 
   async deleteEmployeePositionHandler(id) {
-    const position = await this.employeePositionRepository.findOne({
+    const position = await this.positionRepository.findOne({
       _id: id,
       deletedAt: { $eq: null },
     })
@@ -76,7 +76,7 @@ class EmployeePositionHandler {
       throwError(404, 'Position not found')
     }
 
-    const employeeCount = await this.employeeRepository.count({
+    const employeeCount = await this.userRepository.count({
       position: position._id,
       deletedAt: { $eq: null },
     })
@@ -88,7 +88,7 @@ class EmployeePositionHandler {
       )
     }
 
-    return await this.employeePositionRepository.deleteById(id)
+    return await this.positionRepository.deleteById(id)
   }
 }
 

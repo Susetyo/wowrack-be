@@ -4,16 +4,16 @@ const kpiStatus = require('@/constant/kpi-status')
 
 const schema = new mongoose.Schema(
   {
-    name: {
+    title: {
       type: String,
       required: '{PATH} is required!',
     },
     dateFrom: {
-      type: Date,
+      type: String,
       required: '{PATH} is required!',
     },
     dateTo: {
-      type: Date,
+      type: String,
       required: '{PATH} is required!',
     },
     type: {
@@ -21,23 +21,21 @@ const schema = new mongoose.Schema(
       enum: Object.values(kpiType),
       required: '{PATH} is required!',
     },
-    documents: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'KPIDocument',
-      },
-    ],
+    document: {
+      type: mongoose.Types.ObjectId,
+      ref: 'KPIDocument',
+    },
     division: {
       type: mongoose.Types.ObjectId,
       ref: 'Division',
       default: null,
     },
-    employees: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'Employee',
-      },
-    ],
+
+    // will be handled by back-end
+    employees: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'User',
+    },
     status: {
       type: String,
       enum: Object.values(kpiStatus),

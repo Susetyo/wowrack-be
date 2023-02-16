@@ -1,11 +1,12 @@
-const EmployeeHandler = require('@/modules/employee/employee.handler')
-const employeeHandler = new EmployeeHandler()
+const EmployeePositionHandler = require('@/modules/position/position.handler')
+const employeePositionHandler = new EmployeePositionHandler()
 
-class EmployeeController {
+class EmployeePositionController {
   async create(req, res, next) {
     try {
-      const { body, userId } = req
-      const response = await employeeHandler.createEmployeeHandler(body, userId)
+      const { body } = req
+      const response =
+        await employeePositionHandler.createEmployeePositionHandler(body)
 
       res.send(response)
     } catch (error) {
@@ -16,7 +17,8 @@ class EmployeeController {
   async getList(req, res, next) {
     try {
       const { query } = req
-      const response = await employeeHandler.getListEmployeeHandler(query)
+      const response =
+        await employeePositionHandler.getListEmployeePositionHandler(query)
 
       res.send(response)
     } catch (error) {
@@ -27,8 +29,9 @@ class EmployeeController {
   async getDetail(req, res, next) {
     try {
       const { params } = req
-      const { slug } = params
-      const response = await employeeHandler.getDetailEmployeeHandler(slug)
+      const { id } = params
+      const response =
+        await employeePositionHandler.getDetailEmployeePositionHandler(id)
 
       res.send(response)
     } catch (error) {
@@ -40,7 +43,7 @@ class EmployeeController {
     try {
       const { body, params } = req
       const { id } = params
-      await employeeHandler.updateEmployeeHandler(id, body)
+      await employeePositionHandler.updateEmployeePositionHandler(id, body)
 
       res.send({})
     } catch (error) {
@@ -52,7 +55,7 @@ class EmployeeController {
     try {
       const { params } = req
       const { id } = params
-      await employeeHandler.deleteEmployeeHandler(id)
+      await employeePositionHandler.deleteEmployeePositionHandler(id)
 
       res.send({})
     } catch (error) {
@@ -61,4 +64,4 @@ class EmployeeController {
   }
 }
 
-module.exports = EmployeeController
+module.exports = EmployeePositionController

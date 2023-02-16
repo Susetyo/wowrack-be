@@ -1,5 +1,5 @@
 const Division = require('@/modules/division/division.model')
-const Employee = require('@/modules/employee/employee.model')
+const User = require('@/modules/user/user.model')
 const Repository = require('@/lib/mongodb-repo')
 const throwError = require('@/lib/throw-error')
 const { generateCodeModel } = require('@/lib/helpers')
@@ -8,7 +8,7 @@ const employeeStatus = require('@/constant/employee-status')
 class DivisionHandler {
   constructor() {
     this.divisionRepository = new Repository(Division)
-    this.employeeRepository = new Repository(Employee)
+    this.userRepository = new Repository(User)
   }
 
   async createDivisionHandler(data, userId) {
@@ -45,7 +45,7 @@ class DivisionHandler {
     const result = await this.divisionRepository.findAndCount(payload)
     result.list = await Promise.all(
       result.list.map(async (division) => {
-        const employeeCount = await this.employeeRepository.count({
+        const employeeCount = await this.userRepository.count({
           division: division._id,
           status: employeeStatus.ACTIVE,
           deletedAt: { $eq: null },
@@ -74,15 +74,16 @@ class DivisionHandler {
         {
           path: 'employees',
           match: { status: 'active', deletedAt: { $eq: null } },
-          select: 'user position',
-          populate: {
-            path: 'user',
-            select: 'fullname slug avatar',
-            populate: {
-              path: 'avatar',
-              select: 'path fullpath',
+          populate: [
+            {
+              path: 'position',
+              select: 'name',
             },
-          },
+            {
+              path: 'avatar',
+              select: 'mimetype path fullpath',
+            },
+          ],
         },
       ])
 
@@ -98,10 +99,10 @@ class DivisionHandler {
       employees: division.employees.map((employee) => {
         return {
           _id: employee._id,
-          fullname: employee.user.fullname,
-          slug: employee.user.slug,
-          position: employee.position,
-          avatar: employee.user.avatar,
+          fullname: employee.fullname,
+          slug: employee.slug,
+          position: employee.position.name,
+          avatar: employee.avatar,
         }
       }),
       createdAt: division.createdAt,
@@ -138,7 +139,7 @@ class DivisionHandler {
       )
     }
 
-    return await this.divisionRepository.softDelete(id)
+    return await this.divisionRepository.deleteById(id)
   }
 }
 

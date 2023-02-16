@@ -75,7 +75,7 @@ class MediaHandler {
     const media = await this.mediaRepository.findById(id)
 
     if (!media) {
-      throwError(404, 'Data not found')
+      throwError(404, 'Media not found')
     }
 
     return media
@@ -85,7 +85,7 @@ class MediaHandler {
     const media = await this.mediaRepository.findById(id)
 
     if (!media) {
-      throwError(404, 'Data not found')
+      throwError(404, 'Media not found')
     }
 
     return media.fullpath
@@ -95,7 +95,7 @@ class MediaHandler {
     const media = await this.mediaRepository.findById(id)
 
     if (!media) {
-      throwError(404, 'Data not found')
+      throwError(404, 'Media not found')
     }
 
     // if file's mimetype is in IMAGE_MIMETYPES constant

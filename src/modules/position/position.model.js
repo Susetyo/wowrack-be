@@ -19,4 +19,4 @@ const schema = new mongoose.Schema(
   }
 )
 
-module.exports = mongoose.model('EmployeePosition', schema)
+module.exports = mongoose.model('Position', schema)

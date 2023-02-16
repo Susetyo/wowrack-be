@@ -1,9 +1,9 @@
-const EmployeePosition = require('../../modules/employee-position/employee-position.model')
+const Position = require('../../modules/position/position.model')
 
 module.exports = async function () {
   console.log('Seeding administrator position to the database...')
 
-  const existingPosition = await EmployeePosition.findOne({
+  const existingPosition = await Position.findOne({
     name: 'Administrator',
     deletedAt: { $eq: null },
   })
@@ -12,7 +12,7 @@ module.exports = async function () {
     throw new Error('Administator position already exists')
   }
 
-  await EmployeePosition.create({
+  await Position.create({
     name: 'Administrator',
   })
 }

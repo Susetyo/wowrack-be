@@ -1,9 +1,15 @@
 const mongoose = require('mongoose')
 const mongooseSlug = require('mongoose-slug-updater')
+const employeeStatus = require('../../constant/employee-status')
 const { generateHash } = require('../../lib/helpers')
 
 const schema = new mongoose.Schema(
   {
+    employeeID: {
+      type: String,
+      unique: true,
+      required: '{PATH} is required!',
+    },
     fullname: {
       type: String,
       required: '{PATH} is required!',
@@ -35,12 +41,10 @@ const schema = new mongoose.Schema(
     },
     birthdate: {
       type: String,
-      required: '{PATH} is required!',
       default: null,
     },
     birthplace: {
       type: String,
-      required: '{PATH} is required!',
       default: null,
     },
     phone: {
@@ -49,12 +53,21 @@ const schema = new mongoose.Schema(
       unique: true,
       sparse: true,
       trim: true,
-      required: '{PATH} is required!',
     },
     position: {
       type: mongoose.Types.ObjectId,
-      ref: 'EmployeePosition',
+      ref: 'Position',
       required: true,
+    },
+    division: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Division',
+      default: null,
+    },
+    status: {
+      type: String,
+      enum: Object.values(employeeStatus),
+      required: '{PATH} is required!',
     },
     createdBy: {
       type: mongoose.Types.ObjectId,

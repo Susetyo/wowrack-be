@@ -10,6 +10,8 @@ module.exports = Object.freeze({
   MAX_LIMIT_LIST: 1000,
   DEFAULT_LIMIT_LIST: 20,
 
+  DEFAULT_PASSWORD: process.env.DEFAULT_PASSWORD,
+
   SECRET_KEY: process.env.SECRET_KEY,
   JWT_TTL: process.env.JWT_TTL,
 

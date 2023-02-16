@@ -57,6 +57,7 @@ const paging = (req, res, next) => {
     res.send = _send // set function back to avoid the 'double-send'
     return res.send(data) // just call as normal with data
   }
+
   next()
 }
 

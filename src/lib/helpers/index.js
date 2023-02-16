@@ -112,6 +112,23 @@ const removeSpecialCharacter = (str) => {
   return str ? String(str).replace(/[\W_]/g, '').toLowerCase() : null
 }
 
+const generateEmployeeEmail = (fullname, employeeID) => {
+  fullname = fullname.toLowerCase()
+
+  const splitted = fullname.split(' ')
+  const firstname = splitted[0]
+  const lastname = splitted[splitted.length - 1]
+
+  const username =
+    splitted.length > 1
+      ? firstname + '.' + lastname + employeeID
+      : firstname + employeeID
+
+  const domain = '@mail.com'
+
+  return username + domain
+}
+
 module.exports = {
   normalizePort,
   generateHash,
@@ -120,4 +137,5 @@ module.exports = {
   generateRandomCode,
   generateCodeModel,
   removeSpecialCharacter,
+  generateEmployeeEmail,
 }

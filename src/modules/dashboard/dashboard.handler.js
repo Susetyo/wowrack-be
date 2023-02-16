@@ -1,6 +1,6 @@
 const KPI = require('@/modules/kpi/kpi.model')
-const Employee = require('@/modules/employee/employee.model')
 const Division = require('@/modules/division/division.model')
+const User = require('@/modules/user/user.model')
 const Repository = require('@/lib/mongodb-repo')
 const employeeStatus = require('@/constant/employee-status')
 const kpiStatus = require('@/constant/kpi-status')
@@ -8,12 +8,12 @@ const kpiStatus = require('@/constant/kpi-status')
 class DashboardHandler {
   constructor() {
     this.divisionRepository = new Repository(Division)
-    this.employeeRepository = new Repository(Employee)
     this.kpiRepository = new Repository(KPI)
+    this.userRepository = new Repository(User)
   }
 
   async getSummaryHandler() {
-    const employeeCount = await this.employeeRepository.count({
+    const employeeCount = await this.userRepository.count({
       status: employeeStatus.ACTIVE,
       deletedAt: { $eq: null },
     })
@@ -53,25 +53,21 @@ class DashboardHandler {
         select: 'title',
       },
       {
-        path: 'user',
-        select: 'fullname slug email avatar',
-        populate: {
-          path: 'avatar',
-          select: 'path fullpath',
-        },
+        path: 'avatar',
+        select: 'mimetype path fullpath',
       },
     ]
 
-    const result = await this.employeeRepository.findAndCount(payload)
+    const result = await this.userRepository.findAndCount(payload)
     result.list = result.list.map((employee) => {
       return {
         _id: employee._id,
         employeeID: employee.employeeID,
-        avatar: employee.user.avatar,
-        fullname: employee.user.fullname,
-        slug: employee.user.slug,
-        division: employee.division.title,
-        email: employee.user.email,
+        avatar: employee.avatar,
+        fullname: employee.fullname,
+        slug: employee.slug,
+        division: employee.division,
+        email: employee.email,
         status: employee.status,
       }
     })

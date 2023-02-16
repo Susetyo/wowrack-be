@@ -9,9 +9,9 @@ const {
   createEmployeePositionSchema,
   getEmployeePositionByIdSchema,
   updateEmployeePositionSchema,
-} = require('@/modules/employee-position/employee-position.schema')
+} = require('@/modules/position/position.schema')
 
-const EmployeePositionController = require('@/modules/employee-position/employee-position.controller')
+const EmployeePositionController = require('@/modules/position/position.controller')
 const employeePositionController = new EmployeePositionController()
 
 const auth = require('@/middleware/auth')

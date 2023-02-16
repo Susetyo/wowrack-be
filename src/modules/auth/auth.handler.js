@@ -37,12 +37,16 @@ class AuthHandler {
       })
       .populate([
         {
-          path: 'avatar',
-          select: 'path fullpath',
+          path: 'division',
+          select: 'title',
         },
         {
           path: 'position',
           select: 'name',
+        },
+        {
+          path: 'avatar',
+          select: 'mimetype path fullpath',
         },
       ])
 
@@ -51,7 +55,6 @@ class AuthHandler {
     }
 
     user = user.toJSON()
-    user.position = user.position.name
     delete user.password
 
     return user
