@@ -1,4 +1,5 @@
 const Media = require('@/modules/media/media.model')
+const KPIUser = require('@/modules/kpi-user/kpi-user.model')
 const User = require('@/modules/user/user.model')
 const Repository = require('@/lib/mongodb-repo')
 const excel = require('@/entities/excel-entity')
@@ -11,6 +12,7 @@ const fs = require('fs')
 class KPIEntity {
   constructor() {
     this.mediaRepository = new Repository(Media)
+    this.kpiUserRepository = new Repository(KPIUser)
     this.userRepository = new Repository(User)
   }
 
@@ -85,20 +87,22 @@ class KPIEntity {
       .map((array, key) => {
         const weekOneGoal = countWeeklyTicketCount(arr, 0, key)
         const weekOneActual = countWeeklyTicketCount(arr, 0, key)
+        const weekOnePercentage = (weekOneActual / weekOneGoal) * 100
 
         const weekTwoGoal = countWeeklyTicketCount(arr, 1, key)
         const weekTwoActual = countWeeklyTicketCount(arr, 1, key)
+        const weekTwoPercentage = (weekTwoActual / weekTwoGoal) * 100
 
         total[0].totalGoal += weekOneGoal
         total[0].totalActual += weekOneActual
-        total[0].percentage = !isNaN(total[0].totalGoal / total[0].totalActual)
-          ? (total[0].totalGoal / total[0].totalActual) * 100
+        total[0].percentage = !isNaN(total[0].totalActual / total[0].totalGoal)
+          ? (total[0].totalActual / total[0].totalGoal) * 100
           : 0
 
         total[1].totalGoal += weekTwoGoal
         total[1].totalActual += weekTwoActual
-        total[1].percentage = !isNaN(total[1].totalGoal / total[1].totalActual)
-          ? (total[1].totalGoal / total[1].totalActual) * 100
+        total[1].percentage = !isNaN(total[1].totalActual / total[1].totalGoal)
+          ? (total[1].totalActual / total[1].totalGoal) * 100
           : 0
 
         return {
@@ -107,16 +111,12 @@ class KPIEntity {
             {
               goal: weekOneGoal,
               actual: weekOneActual,
-              percentage: !isNaN(weekOneGoal / weekOneActual)
-                ? (weekOneGoal / weekOneActual) * 100
-                : 0,
+              percentage: !isNaN(weekOnePercentage) ? weekOnePercentage : 0,
             },
             {
               goal: weekTwoGoal,
               actual: weekTwoActual,
-              percentage: !isNaN(weekTwoGoal / weekTwoActual)
-                ? (weekTwoGoal / weekTwoActual) * 100
-                : 0,
+              percentage: !isNaN(weekTwoPercentage) ? weekTwoPercentage : 0,
             },
           ],
         }
@@ -144,20 +144,45 @@ class KPIEntity {
 
   // TODO: handle other kpi document types
 
+  async calculateKPIScore(id) {
+    const kpiUsers = await this.kpiUserRepository.find({
+      filter: {
+        kpi: id,
+        deletedAt: { $eq: null },
+      },
+      select: 'biWeeklyData',
+    })
+
+    let goal = 0
+    let actual = 0
+    for (const kpiUser of kpiUsers) {
+      goal = kpiUser.biWeeklyData.reduce((prev, curr) => {
+        return prev + curr.goal
+      }, 0)
+
+      actual = kpiUser.biWeeklyData.reduce((prev, curr) => {
+        return prev + curr.actual
+      }, 0)
+    }
+
+    const score = (actual / goal) * 100
+    return !isNaN(score) ? Math.floor(score) : 0
+  }
+
   async deleteKPIDocument(id) {
     const document = await this.mediaRepository.findById(id)
 
-    if (!document) {
-      throwError(404, 'Media not found')
+    if (document) {
+      // delete file from local storage
+      const dir = config.LOCAL_STORAGE_PATH + document.filename
+      if (fs.existsSync(dir)) {
+        fs.unlinkSync(dir)
+      }
+
+      return await this.mediaRepository.deleteById(id)
     }
 
-    // delete file from local storage
-    const dir = config.LOCAL_STORAGE_PATH + document.filename
-    if (fs.existsSync(dir)) {
-      fs.unlinkSync(dir)
-    }
-
-    return await this.mediaRepository.deleteById(id)
+    return null
   }
 }
 

@@ -129,6 +129,37 @@ const generateEmployeeEmail = (fullname, employeeID) => {
   return username + domain
 }
 
+const paginator = (items, current_page, per_page_items) => {
+  let _page = parseInt(current_page, 10)
+  let _limit = parseInt(per_page_items, 10)
+
+  _page = Number.isNaN(_page) ? 1 : _page
+  _limit = Number.isNaN(_limit) ? config.DEFAULT_LIMIT_LIST : _limit
+
+  _limit = Math.min(_limit, config.MAX_LIMIT_LIST)
+
+  const _skip = _page * _limit - _limit
+
+  let list = items
+  if (_page > 0 && _limit > 0) {
+    list = items.slice(_skip).slice(0, _limit)
+  }
+
+  const next = _skip + _limit < items.length
+  const prev = _skip - _limit >= 0
+
+  return {
+    pagination: {
+      count: items.length,
+      next,
+      prev,
+      page: _page,
+      perPage: _limit,
+    },
+    list,
+  }
+}
+
 module.exports = {
   normalizePort,
   generateHash,
@@ -138,4 +169,5 @@ module.exports = {
   generateCodeModel,
   removeSpecialCharacter,
   generateEmployeeEmail,
+  paginator,
 }

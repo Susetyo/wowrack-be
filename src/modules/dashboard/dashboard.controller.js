@@ -21,6 +21,28 @@ class DashboardController {
       next(error)
     }
   }
+
+  async getStatistic(req, res, next) {
+    try {
+      const { query } = req
+      const response = await dashboardHandler.getStatisticHandler(query)
+
+      res.send(response)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getEmployeeRanks(req, res, next) {
+    try {
+      const { query } = req
+      const response = await dashboardHandler.getEmployeeRanksHandler(query)
+
+      res.send(response)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = DashboardController

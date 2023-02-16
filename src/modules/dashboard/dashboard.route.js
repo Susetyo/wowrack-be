@@ -8,6 +8,14 @@ const auth = require('@/middleware/auth')
 const pagination = require('@/middleware/pagination')
 
 router.get('/summary', auth.required, dashboardController.summary)
+router.get('/statistic', auth.required, dashboardController.getStatistic)
+
+router.get(
+  '/employee-ranks',
+  auth.required,
+  dashboardController.getEmployeeRanks
+)
+
 router.get(
   '/employee-list',
   auth.required,

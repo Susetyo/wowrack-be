@@ -79,9 +79,9 @@ class KPIUserEntity {
       }, 0)
     }
 
-    const avgScorePercentage = (totalGoal / totalActual) * 100
+    const avgScorePercentage = (totalActual / totalGoal) * 100
 
-    return !isNaN(avgScorePercentage) ? avgScorePercentage : 0
+    return !isNaN(avgScorePercentage) ? Math.floor(avgScorePercentage) : 0
   }
 }
 

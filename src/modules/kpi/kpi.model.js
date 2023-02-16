@@ -41,6 +41,10 @@ const schema = new mongoose.Schema(
       enum: Object.values(kpiStatus),
       required: '{PATH} is required!',
     },
+    score: {
+      type: Number,
+      default: 0,
+    },
     createdBy: {
       type: mongoose.Types.ObjectId,
       ref: 'User',

@@ -62,6 +62,9 @@ class KPIHandler {
       kpiData.employees.push(kpiUser.user)
     }
 
+    // calculate kpi score
+    kpiData.score = await this.kpiEntity.calculateKPIScore(kpiData._id)
+
     // create new kpi
     const kpi = await this.kpiRepository.create(kpiData)
 
@@ -100,6 +103,7 @@ class KPIHandler {
         }
       }),
       createdAt: kpi.createdAt,
+      score: kpi.score,
     }
   }
 
@@ -221,7 +225,9 @@ class KPIHandler {
     // handle if kpi's document or division was changed
     if (isKPIDocumentChanged || isKPIDivisionChanged) {
       // override kpi.employees array into an empty array
+      // and kpi score to 0
       kpi.employees = []
+      kpi.score = 0
 
       // delete kpi's kpiusers data
       await this.kpiUserRepository.deleteMany({
@@ -261,6 +267,9 @@ class KPIHandler {
         // push userId of the kpiuser's data into kpi.employees array
         kpi.employees.push(kpiUser.user)
       }
+
+      // calculate kpi score
+      kpi.score = await this.kpiEntity.calculateKPIScore(kpi._id)
 
       await kpi.save()
     }
