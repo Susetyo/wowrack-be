@@ -1,4 +1,5 @@
 const Division = require('@/modules/division/division.model')
+const Log = require('@/modules/log/log.model')
 const Media = require('@/modules/media/media.model')
 const KPI = require('@/modules/kpi/kpi.model')
 const KPIUser = require('@/modules/kpi-user/kpi-user.model')
@@ -10,10 +11,12 @@ const KPIUserEntity = require('@/entities/kpi-user-entity')
 const kpiStatus = require('@/constant/kpi-status')
 const employeeStatus = require('@/constant/employee-status')
 const mongoose = require('mongoose')
+const logModule = require('@/constant/log-module')
 
 class KPIHandler {
   constructor() {
     this.divisionRepository = new Repository(Division)
+    this.logRepository = new Repository(Log)
     this.mediaRepository = new Repository(Media)
     this.kpiRepository = new Repository(KPI)
     this.kpiUserRepository = new Repository(KPIUser)
@@ -336,7 +339,10 @@ class KPIHandler {
     await this.kpiEntity.deleteKPIDocument(kpi.document)
 
     // delete kpi
-    return await this.kpiRepository.deleteById(id)
+    await this.kpiRepository.deleteById(id)
+
+    // return deleted kpi data for logging
+    return kpi
   }
 
   async checkUsersInDivisionHandler(data) {
@@ -359,6 +365,37 @@ class KPIHandler {
     }
 
     return data.kpiData
+  }
+
+  async getKPILogHandler(query) {
+    const payload = {
+      skip: query?.skip,
+      limit: query?.limit,
+      page: query?.page,
+      perPage: query?.perPage,
+    }
+
+    payload.filter = {
+      module: logModule.KPI,
+    }
+
+    const result = await this.logRepository.findAndCount(payload)
+    result.list = await Promise.all(
+      result.list.map(async (log) => {
+        const user = await this.userRepository
+          .findById(log.userId)
+          .select('fullname')
+
+        return {
+          _id: log._id,
+          fullname: user.fullname,
+          title: log.data?.title,
+          action: log.action,
+        }
+      })
+    )
+
+    return result
   }
 }
 

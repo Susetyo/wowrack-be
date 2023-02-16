@@ -150,19 +150,13 @@ class DashboardHandler {
   }
 
   async getEmployeeRanksHandler(query) {
-    const payload = {
-      skip: query?.skip,
-      limit: query?.limit,
-      page: query?.page,
-      perPage: query?.perPage,
-    }
-
-    payload.filter = {
-      status: employeeStatus.ACTIVE,
-      deletedAt: { $eq: null },
-    }
-
     let leaderboards = await this.userRepository.aggregate([
+      {
+        $match: {
+          status: employeeStatus.ACTIVE,
+          deletedAt: { $eq: null },
+        },
+      },
       {
         $lookup: {
           from: 'kpiusers',

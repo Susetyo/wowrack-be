@@ -26,6 +26,14 @@ router.get(
   kpiController.getList
 )
 
+router.get(
+  '/logs',
+  auth.required,
+  pagination.parse,
+  pagination.paging,
+  kpiController.getKPILog
+)
+
 router.post(
   '/create',
   auth.required,

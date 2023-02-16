@@ -74,7 +74,7 @@ class KPIController {
     try {
       const { params } = req
       const { id } = params
-      await kpiHandler.deleteKPIHandler(id)
+      const kpi = await kpiHandler.deleteKPIHandler(id)
 
       // insert log
       await logHandler.createLogHandler({
@@ -82,6 +82,7 @@ class KPIController {
         module: logHandler.module.KPI,
         action: logHandler.action.DELETE,
         id: id,
+        data: kpi,
         description: 'Administrator Deletes KPI',
       })
 
@@ -95,6 +96,17 @@ class KPIController {
     try {
       const { body } = req
       const response = await kpiHandler.checkUsersInDivisionHandler(body)
+
+      res.send(response)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getKPILog(req, res, next) {
+    try {
+      const { query } = req
+      const response = await kpiHandler.getKPILogHandler(query)
 
       res.send(response)
     } catch (error) {
