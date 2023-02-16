@@ -23,7 +23,7 @@ const schema = new mongoose.Schema(
     },
     document: {
       type: mongoose.Types.ObjectId,
-      ref: 'KPIDocument',
+      ref: 'Media',
     },
     division: {
       type: mongoose.Types.ObjectId,

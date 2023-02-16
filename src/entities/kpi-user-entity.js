@@ -59,6 +59,30 @@ class KPIUserEntity {
       createdBy: data.createdBy,
     })
   }
+
+  async calculateAverageScore(userId) {
+    const kpiUsers = await this.kpiUserRepository.find({
+      filter: {
+        user: userId,
+      },
+    })
+
+    let totalGoal = 0
+    let totalActual = 0
+    for (const kpiUser of kpiUsers) {
+      totalGoal += kpiUser.biWeeklyData.reduce((prev, curr) => {
+        return prev + curr.goal
+      }, 0)
+
+      totalActual += kpiUser.biWeeklyData.reduce((prev, curr) => {
+        return prev + curr.actual
+      }, 0)
+    }
+
+    const avgScorePercentage = (totalGoal / totalActual) * 100
+
+    return !isNaN(avgScorePercentage) ? avgScorePercentage : 0
+  }
 }
 
 module.exports = KPIUserEntity
